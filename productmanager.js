@@ -5,7 +5,6 @@ class ProductManager {
     }
   
     addProduct(product) {
-      // Validar que todos los campos obligatorios estén presentes
       if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
         console.error('Todos los campos son obligatorios.');
         return;
@@ -17,7 +16,6 @@ class ProductManager {
         return;
       }
   
-      // Asignar un id autoincrementable
       const productId = this.productIdCounter++;
       const newProduct = { id: productId, ...product };
       this.products.push(newProduct);
@@ -40,7 +38,6 @@ class ProductManager {
     }
   }
   
-  // Ejemplo de uso
   const productManager = new ProductManager();
   
   const product1 = {
