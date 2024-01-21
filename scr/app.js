@@ -1,5 +1,5 @@
 const express = require('express');
-const ProductManager = require('./productManager'); // Ajusta la ruta según la ubicación de tu archivo de ProductManager
+const ProductManager = require('./productmanager'); // Ajusta la ruta según la ubicación de tu archivo de ProductManager
 
 const app = express();
 const port = 3000;
