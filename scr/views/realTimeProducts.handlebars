@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos en Tiempo Real</title>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <ul id="productos-lista">
+        {{#each productos}}
+            <li>{{this.title}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <form id="agregarProductoForm">
+        <input type="text" id="title" placeholder="Título del Producto">
+        <input type="text" id="price" placeholder="Precio del Producto">
+        <button type="submit">Agregar Producto</button>
+    </form>
+
+    <form id="eliminarProductoForm">
+        <input type="text" id="productId" placeholder="ID del Producto a Eliminar">
+        <button type="submit">Eliminar Producto</button>
+    </form>
+
+    <!-- Script para manejar la conexión a websockets -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        // Escuchar evento para recibir productos actualizados en tiempo real
+        socket.on('productosActualizados', function(productos) {
+            var productosLista = document.getElementById('productos-lista');
+            productosLista.innerHTML = '';
+
+            productos.forEach(function(producto) {
+                var listItem = document.createElement('li');
+                listItem.textContent = producto.title + ' - ' + producto.price;
+                productosLista.appendChild(listItem);
+            });
+        });
+
+        // Manejar el envío del formulario para agregar un producto
+        var agregarProductoForm = document.getElementById('agregarProductoForm');
+        agregarProductoForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var title = document.getElementById('title').value;
+            var price = document.getElementById('price').value;
+
+            // Emitir evento para agregar un producto
+            socket.emit('agregarProducto', { title: title, price: price });
+        });
+
+        // Manejar el envío del formulario para eliminar un producto
+        var eliminarProductoForm = document.getElementById('eliminarProductoForm');
+        eliminarProductoForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var productId = document.getElementById('productId').value;
+
+            // Emitir evento para eliminar un producto
+            socket.emit('eliminarProducto', productId);
+        });
+    </script>
+</body>
+</html>

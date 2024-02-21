@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat en tiempo real</h1>
+    
+    <!-- Mostrar mensajes anteriores -->
+    <div id="messages">
+        {{#each messages}}
+            <p>{{this.user}}: {{this.message}}</p>
+        {{/each}}
+    </div>
+
+    <!-- Formulario para enviar mensajes -->
+    <form id="messageForm">
+        <input type="text" id="user" placeholder="Usuario">
+        <input type="text" id="message" placeholder="Mensaje">
+        <button type="submit">Enviar</button>
+    </form>
+
+    <!-- Scripts para la funcionalidad del chat -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <script>
+        // Establecer conexión con el servidor de WebSocket
+        const socket = io();
+
+        // Manejar envío de mensajes desde el formulario
+        const form = document.getElementById('messageForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const user = document.getElementById('user').value;
+            const message = document.getElementById('message').value;
+            if (user && message) {
+                socket.emit('chat message', { user, message });
+                document.getElementById('message').value = '';
+            }
+        });
+
+        // Recibir y mostrar mensajes en tiempo real
+        socket.on('chat message', function(msg) {
+            const messages = document.getElementById('messages');
+            const p = document.createElement('p');
+            p.textContent = msg.user + ': ' + msg.message;
+            messages.appendChild(p);
+        });
+    </script>
+</body>
+</html>

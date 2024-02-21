@@ -1,4 +1,4 @@
 // config.js
 module.exports = {
-    mongoURI: 'tu_URI_de_MongoDB_Atlas',
+    mongoURI: 'mongodb+srv://lenux2112:Imlenux92_@cluster0.dkm9xl9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
   };
