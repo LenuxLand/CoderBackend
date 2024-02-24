@@ -100,3 +100,16 @@ io.on('connection', socket => {
     console.log('Un usuario se ha desconectado');
   });
 });
+
+const express = require('express');
+const cartRoutes = require('./routes/cartRoutes');
+
+// Usar las rutas para carritos
+app.use('/api', cartRoutes);
+
+// Otros middlewares y configuraciones...
+
+// Iniciar el servidor
+app.listen(3000, () => {
+    console.log('Servidor iniciado en el puerto 3000');
+});
