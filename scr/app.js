@@ -113,3 +113,62 @@ app.use('/api', cartRoutes);
 app.listen(3000, () => {
     console.log('Servidor iniciado en el puerto 3000');
 });
+// app.js
+
+// Ruta para mostrar la vista de login
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/login.html');
+});
+
+// Ruta para mostrar la vista de registro
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/register.html');
+});
+
+// Ruta para el login
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  // Verificar las credenciales y gestionar la sesión del usuario
+  // Redirigir al usuario a la vista de productos si las credenciales son válidas
+  // Mostrar un mensaje de error si las credenciales no son válidas
+});
+
+// Ruta para el registro
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+  // Crear un nuevo usuario en la base de datos con las credenciales proporcionadas
+  // Gestionar la sesión del usuario y redirigirlo a la vista de productos
+});
+// Importar los módulos necesarios
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+// Configurar la estrategia de autenticación local
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, (email, password, done) => {
+    // Aquí deberías verificar las credenciales en tu base de datos
+    // Llamar a done() con el usuario si las credenciales son válidas, o null si no lo son
+}));
+
+// Serialize y deserialize el usuario para almacenar y recuperar la sesión del usuario
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    // Aquí deberías buscar al usuario en la base de datos por su ID
+    // Llamar a done() con el usuario si se encuentra, o null si no
+});
+
+// Usar passport middleware en tu aplicación Express
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Ruta para el login con passport.authenticate()
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/products', // Redirigir a la vista de productos si el login es exitoso
+    failureRedirect: '/login', // Redirigir de vuelta al login si las credenciales son inválidas
+    failureFlash: true // Mostrar mensajes flash de error
+}));
