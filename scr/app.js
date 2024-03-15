@@ -128,15 +128,12 @@ app.get('/register', (req, res) => {
 // Ruta para el login
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
-  // Verificar las credenciales y gestionar la sesión del usuario
-  // Redirigir al usuario a la vista de productos si las credenciales son válidas
   // Mostrar un mensaje de error si las credenciales no son válidas
 });
 
 // Ruta para el registro
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
-  // Crear un nuevo usuario en la base de datos con las credenciales proporcionadas
   // Gestionar la sesión del usuario y redirigirlo a la vista de productos
 });
 // Importar los módulos necesarios
@@ -148,7 +145,6 @@ passport.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
 }, (email, password, done) => {
-    // Aquí deberías verificar las credenciales en tu base de datos
     // Llamar a done() con el usuario si las credenciales son válidas, o null si no lo son
 }));
 
@@ -172,3 +168,38 @@ app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login', // Redirigir de vuelta al login si las credenciales son inválidas
     failureFlash: true // Mostrar mensajes flash de error
 }));
+
+
+const express = require('express');
+const passport = require('passport');
+const auth = require('./auth'); // Importar el archivo auth.js que acabamos de crear
+
+
+
+
+// Configurar Passport.js
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Definir rutas para el login y el registro
+app.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/productos',
+    failureRedirect: '/login',
+    failureFlash: true
+}));
+
+app.post('/register', passport.authenticate('local-register', {
+    successRedirect: '/productos',
+    failureRedirect: '/register',
+    failureFlash: true
+}));
+
+// Definir ruta para autenticación con GitHub
+app.get('/auth/github', passport.authenticate('github'));
+
+app.get('/auth/github/callback', passport.authenticate('github', {
+    successRedirect: '/productos',
+    failureRedirect: '/login'
+}));
+
+// Resto de las configuraciones y rutas...
